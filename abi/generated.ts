@@ -363,6 +363,328 @@ export const guardedMulticallerAbi = [
 ] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GuardedMulticaller2
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const guardedMulticaller2Abi = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: '_owner', internalType: 'address', type: 'address' },
+      { name: '_name', internalType: 'string', type: 'string' },
+      { name: '_version', internalType: 'string', type: 'string' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'DEFAULT_ADMIN_ROLE',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'MULTICALL_SIGNER_ROLE',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'eip712Domain',
+    outputs: [
+      { name: 'fields', internalType: 'bytes1', type: 'bytes1' },
+      { name: 'name', internalType: 'string', type: 'string' },
+      { name: 'version', internalType: 'string', type: 'string' },
+      { name: 'chainId', internalType: 'uint256', type: 'uint256' },
+      { name: 'verifyingContract', internalType: 'address', type: 'address' },
+      { name: 'salt', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'extensions', internalType: 'uint256[]', type: 'uint256[]' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: '_multicallSigner', internalType: 'address', type: 'address' },
+      { name: '_reference', internalType: 'bytes32', type: 'bytes32' },
+      {
+        name: '_calls',
+        internalType: 'struct GuardedMulticaller2.Call[]',
+        type: 'tuple[]',
+        components: [
+          { name: 'target', internalType: 'address', type: 'address' },
+          { name: 'functionSignature', internalType: 'string', type: 'string' },
+          { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+      },
+      { name: '_deadline', internalType: 'uint256', type: 'uint256' },
+      { name: '_signature', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'execute',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'role', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'getRoleAdmin',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '_user', internalType: 'address', type: 'address' }],
+    name: 'grantMulticallSignerRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'grantRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '_reference', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'hasBeenExecuted',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'hasRole',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'renounceRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '_user', internalType: 'address', type: 'address' }],
+    name: 'revokeMulticallSignerRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'revokeRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
+    name: 'supportsInterface',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  { type: 'event', anonymous: false, inputs: [], name: 'EIP712DomainChanged' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: '_multicallSigner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: '_reference',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: '_calls',
+        internalType: 'struct GuardedMulticaller2.Call[]',
+        type: 'tuple[]',
+        components: [
+          { name: 'target', internalType: 'address', type: 'address' },
+          { name: 'functionSignature', internalType: 'string', type: 'string' },
+          { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+        indexed: false,
+      },
+      {
+        name: '_deadline',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Multicalled',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+      {
+        name: 'previousAdminRole',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'newAdminRole',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+    ],
+    name: 'RoleAdminChanged',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'RoleGranted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'RoleRevoked',
+  },
+  { type: 'error', inputs: [], name: 'EmptyCallArray' },
+  {
+    type: 'error',
+    inputs: [{ name: '_deadline', internalType: 'uint256', type: 'uint256' }],
+    name: 'Expired',
+  },
+  {
+    type: 'error',
+    inputs: [
+      {
+        name: '_call',
+        internalType: 'struct GuardedMulticaller2.Call',
+        type: 'tuple',
+        components: [
+          { name: 'target', internalType: 'address', type: 'address' },
+          { name: 'functionSignature', internalType: 'string', type: 'string' },
+          { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+      },
+      { name: '_returnData', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'FailedCall',
+  },
+  {
+    type: 'error',
+    inputs: [
+      {
+        name: '_call',
+        internalType: 'struct GuardedMulticaller2.Call',
+        type: 'tuple',
+        components: [
+          { name: 'target', internalType: 'address', type: 'address' },
+          { name: 'functionSignature', internalType: 'string', type: 'string' },
+          { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+      },
+    ],
+    name: 'InvalidFunctionSignature',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: '_reference', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'InvalidReference',
+  },
+  { type: 'error', inputs: [], name: 'InvalidShortString' },
+  {
+    type: 'error',
+    inputs: [
+      {
+        name: '_call',
+        internalType: 'struct GuardedMulticaller2.Call',
+        type: 'tuple',
+        components: [
+          { name: 'target', internalType: 'address', type: 'address' },
+          { name: 'functionSignature', internalType: 'string', type: 'string' },
+          { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+      },
+    ],
+    name: 'NonContractAddress',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: '_reference', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'ReusedReference',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'str', internalType: 'string', type: 'string' }],
+    name: 'StringTooLong',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: '_signature', internalType: 'bytes', type: 'bytes' }],
+    name: 'UnauthorizedSignature',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: '_multicallSigner', internalType: 'address', type: 'address' },
+    ],
+    name: 'UnauthorizedSigner',
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ImmutableERC1155
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2414,5 +2736,355 @@ export const immutableErc721MintByIdAbi = [
     type: 'error',
     inputs: [{ name: 'to', internalType: 'address', type: 'address' }],
     name: 'TransferToNotInAllowlist',
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PaymentSplitter
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const paymentSplitterAbi = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: 'admin', internalType: 'address', type: 'address' },
+      { name: 'registrar', internalType: 'address', type: 'address' },
+      { name: 'fundsAdmin', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  { type: 'receive', stateMutability: 'payable' },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'DEFAULT_ADMIN_ROLE',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'RELEASE_FUNDS_ROLE',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'TOKEN_REGISTRAR_ROLE',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
+    ],
+    name: 'addToAllowlist',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'erc20Allowlist',
+    outputs: [
+      { name: '', internalType: 'contract IERC20[]', type: 'address[]' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'role', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'getRoleAdmin',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'index', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'getRoleMember',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'role', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'getRoleMemberCount',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
+    name: 'grantReleaseFundsRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'grantRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'hasRole',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'payees', internalType: 'address payable[]', type: 'address[]' },
+      { name: 'shares_', internalType: 'uint256[]', type: 'uint256[]' },
+    ],
+    name: 'overridePayees',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'index', internalType: 'uint256', type: 'uint256' }],
+    name: 'payee',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'releasable',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'releasable',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'releaseAll',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
+    name: 'removeFromAllowlist',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'renounceRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
+    name: 'revokeReleaseFundsRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'account', internalType: 'address', type: 'address' },
+    ],
+    name: 'revokeRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'shares',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
+    name: 'supportsInterface',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'totalShares',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'token',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: true,
+      },
+      { name: 'to', internalType: 'address', type: 'address', indexed: false },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'ERC20PaymentReleased',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'shares',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'PayeeAdded',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'from',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'PaymentReceived',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'to', internalType: 'address', type: 'address', indexed: false },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'PaymentReleased',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+      {
+        name: 'previousAdminRole',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'newAdminRole',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+    ],
+    name: 'RoleAdminChanged',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'RoleGranted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'RoleRevoked',
+  },
+  {
+    type: 'error',
+    inputs: [],
+    name: 'PaymentSplitterLengthMismatchSharesPayees',
+  },
+  { type: 'error', inputs: [], name: 'PaymentSplitterNoPayeesAdded' },
+  { type: 'error', inputs: [], name: 'PaymentSplitterPayeeZeroShares' },
+  { type: 'error', inputs: [], name: 'PaymentSplitterPayeeZerothAddress' },
+  {
+    type: 'error',
+    inputs: [],
+    name: 'PaymentSplitterSharesAlreadyExistForPayee',
   },
 ] as const
