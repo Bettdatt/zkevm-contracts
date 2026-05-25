@@ -1,4 +1,4 @@
-// Copyright Immutable Pty Ltd 2018 - 2023
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.8.19 <0.8.29;
 
@@ -10,7 +10,6 @@ import {Address} from "@openzeppelin/contracts/utils/Address.sol";
  * @dev This contract is adapted from the official Wrapped ETH contract.
  * This contract is copied from https://github.com/immutable/zkevm-bridge-contracts/blob/main/src/child/WIMX.sol
  */
-// solhint-disable custom-errors, reason-string
 contract WIMX is IWIMX {
     // slither-disable-start constable-states
     string public name = "Wrapped IMX";
@@ -48,6 +47,7 @@ contract WIMX is IWIMX {
         Address.sendValue(payable(msg.sender), wad);
         emit Withdrawal(msg.sender, wad);
     }
+
     // slither-disable-end reentrancy-events
 
     /**

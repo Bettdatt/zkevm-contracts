@@ -1,12 +1,10 @@
-// Copyright Immutable Pty Ltd 2018 - 2025
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 pragma solidity >=0.8.19 <0.8.29;
 
-// solhint-disable-next-line no-global-import
-import "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {StakeHolderWIMX} from "../../contracts/staking/StakeHolderWIMX.sol";
 import {StakeHolderWIMXV2} from "../../contracts/staking/StakeHolderWIMXV2.sol";
-import {ERC1967Proxy} from "openzeppelin-contracts-4.9.3/proxy/ERC1967/ERC1967Proxy.sol";
 import {TimelockController} from "openzeppelin-contracts-4.9.3/governance/TimelockController.sol";
 import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-4.9.3/proxy/utils/UUPSUpgradeable.sol";
 import {StakeHolderBase} from "../../contracts/staking/StakeHolderBase.sol";
@@ -30,7 +28,7 @@ contract StakeHolderUpgradeForkTest is Test {
     StakeHolderWIMX stakeHolder;
     TimelockController stakeHolderTimeDelay;
 
-    // Put the variables below into storage so we don't need to worry about 
+    // Put the variables below into storage so we don't need to worry about
     // stack depth issues.
     address stakingTokenAddress;
     uint256 numStakers;
@@ -51,7 +49,7 @@ contract StakeHolderUpgradeForkTest is Test {
             // It would fail if we were to run the test.
             return;
         }
-        console.log("Executing Staking Contract Upgrade Fork Test");
+        //console.log("Executing Staking Contract Upgrade Fork Test");
 
         stakingTokenAddress = stakeHolder.getToken();
         assertEq(WIMX, stakingTokenAddress, "WIMX address incorrect prior to upgrade");
@@ -76,8 +74,8 @@ contract StakeHolderUpgradeForkTest is Test {
         StakeHolderWIMXV2 v2Impl = new StakeHolderWIMXV2();
 
         bytes memory callData = abi.encodeWithSelector(StakeHolderBase.upgradeStorage.selector, bytes(""));
-        bytes memory upgradeCall = abi.encodeWithSelector(
-            UUPSUpgradeable.upgradeToAndCall.selector, address(v2Impl), callData);
+        bytes memory upgradeCall =
+            abi.encodeWithSelector(UUPSUpgradeable.upgradeToAndCall.selector, address(v2Impl), callData);
 
         address target = address(stakeHolder);
         uint256 value = 0;
@@ -89,8 +87,7 @@ contract StakeHolderUpgradeForkTest is Test {
         uint256 timeNow = block.timestamp;
 
         vm.prank(PROPOSER);
-        stakeHolderTimeDelay.schedule(
-            target, value, data, predecessor, salt, theDelay);
+        stakeHolderTimeDelay.schedule(target, value, data, predecessor, salt, theDelay);
 
         vm.warp(timeNow + delay);
 

@@ -1,36 +1,25 @@
-// Copyright Immutable Pty Ltd 2018 - 2023
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 // slither-disable-start calls-loop
 pragma solidity >=0.8.19 <0.8.29;
 
-// Allowlist Registry
 import {IOperatorAllowlist} from "./IOperatorAllowlist.sol";
-
-// Interface
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-
-// Errors
 import {OperatorAllowlistEnforcementErrors} from "../errors/Errors.sol";
 
-/*
-    OperatorAllowlistEnforced is an abstract contract that token contracts can inherit in order to set the
-    address of the OperatorAllowlist registry that it will interface with, so that the token contract may
-    enable the restriction of approvals and transfers to allowlisted users.
-    OperatorAllowlistEnforced is not designed to be upgradeable or extended.
-*/
+// Disable this code size warning as there is no plan to change this logic.
+// forge-lint: disable-start(unwrapped-modifier-logic)
+
+/**
+ * @notice OperatorAllowlistEnforced is an abstract contract that token contracts can inherit in order to set the
+ * address of the OperatorAllowlist registry that it will interface with, so that the token contract may
+ * enable the restriction of approvals and transfers to allowlisted users.
+ * OperatorAllowlistEnforced is not designed to be upgradeable or extended.
+ */
 
 abstract contract OperatorAllowlistEnforced is OperatorAllowlistEnforcementErrors {
-    ///     =====   State Variables  =====
-
-    /// @notice Interface that implements the `IOperatorAllowlist` interface
-    IOperatorAllowlist public operatorAllowlist;
-
-    ///     =====     Events         =====
-
     /// @notice Emitted whenever the transfer Allowlist registry is updated
     event OperatorAllowlistRegistryUpdated(address oldRegistry, address newRegistry);
-
-    ///     =====     Modifiers      =====
 
     /**
      * @notice Internal function to validate an approval, according to whether the target is an EOA or Allowlisted
@@ -63,10 +52,7 @@ abstract contract OperatorAllowlistEnforced is OperatorAllowlistEnforcementError
         // Check for:
         // 1. caller is an EOA
         // 2. caller is Allowlisted or is the calling address bytecode is Allowlisted
-        if (
-            msg.sender != tx.origin && // solhint-disable-line avoid-tx-origin
-            !operatorAllowlist.isAllowlisted(msg.sender)
-        ) {
+        if (msg.sender != tx.origin && !operatorAllowlist.isAllowlisted(msg.sender)) {
             revert CallerNotInAllowlist(msg.sender);
         }
 
@@ -86,7 +72,8 @@ abstract contract OperatorAllowlistEnforced is OperatorAllowlistEnforcementError
         _;
     }
 
-    ///     =====  External functions  =====
+    /// @notice Interface that implements the `IOperatorAllowlist` interface
+    IOperatorAllowlist public operatorAllowlist;
 
     /**
      * @notice Internal function to set the operator allowlist the calling contract will interface with
@@ -101,4 +88,6 @@ abstract contract OperatorAllowlistEnforced is OperatorAllowlistEnforcementError
         operatorAllowlist = IOperatorAllowlist(_operatorAllowlist);
     }
 }
+
+// forge-lint: disable-end(unwrapped-modifier-logic)
 // slither-disable-end calls-loop

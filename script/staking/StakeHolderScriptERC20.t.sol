@@ -1,8 +1,9 @@
-// Copyright (c) Immutable Pty Ltd 2018 - 2023
+// Copyright (c) Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
-import "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
+import {console} from "forge-std/console.sol";
 import {ERC1967Proxy} from "openzeppelin-contracts-4.9.3/proxy/ERC1967/ERC1967Proxy.sol";
 import {TimelockController} from "openzeppelin-contracts-4.9.3/governance/TimelockController.sol";
 import {ERC20PresetFixedSupply} from "openzeppelin-contracts-4.9.3/token/ERC20/presets/ERC20PresetFixedSupply.sol";
@@ -36,29 +37,29 @@ struct ComplexDeploymentArgs {
     address factory;
     string salt;
 }
+
 struct ComplexStakeHolderContractArgs {
     address distributeAdmin;
     address token;
 }
+
 struct ComplexTimelockContractArgs {
     uint256 timeDelayInSeconds;
     address proposerAdmin;
     address executorAdmin;
 }
 
-
 // Args needed for simple deployment
 struct SimpleDeploymentArgs {
     address deployer;
 }
+
 struct SimpleStakeHolderContractArgs {
     address roleAdmin;
     address upgradeAdmin;
     address distributeAdmin;
     address token;
 }
-
-
 
 /**
  * @notice Deployment script and test code for the deployment script.
@@ -67,7 +68,6 @@ struct SimpleStakeHolderContractArgs {
  * For more details on deployment see ../../contracts/staking/README.md
  */
 contract StakeHolderScriptERC20 is Test {
-
     /**
      * Deploy the OwnableCreate3Deployer needed for the complex deployment.
      */
@@ -89,13 +89,15 @@ contract StakeHolderScriptERC20 is Test {
         address executorAdmin = vm.envAddress("TIMELOCK_EXECUTOR_ADMIN");
         string memory salt = vm.envString("SALT");
 
-        ComplexDeploymentArgs memory deploymentArgs = ComplexDeploymentArgs({signer: signer, factory: factory, salt: salt});
+        ComplexDeploymentArgs memory deploymentArgs =
+            ComplexDeploymentArgs({signer: signer, factory: factory, salt: salt});
 
         ComplexStakeHolderContractArgs memory stakeHolderArgs =
             ComplexStakeHolderContractArgs({distributeAdmin: distributeAdmin, token: token});
 
-        ComplexTimelockContractArgs memory timelockArgs = 
-            ComplexTimelockContractArgs({timeDelayInSeconds: timeDelayInSeconds, proposerAdmin: proposerAdmin, executorAdmin: executorAdmin});
+        ComplexTimelockContractArgs memory timelockArgs = ComplexTimelockContractArgs({
+            timeDelayInSeconds: timeDelayInSeconds, proposerAdmin: proposerAdmin, executorAdmin: executorAdmin
+        });
         _deployComplex(deploymentArgs, stakeHolderArgs, timelockArgs);
     }
 
@@ -111,10 +113,9 @@ contract StakeHolderScriptERC20 is Test {
 
         SimpleDeploymentArgs memory deploymentArgs = SimpleDeploymentArgs({deployer: deployer});
 
-        SimpleStakeHolderContractArgs memory stakeHolderArgs =
-            SimpleStakeHolderContractArgs({
-                roleAdmin: roleAdmin, upgradeAdmin: upgradeAdmin, 
-                distributeAdmin: distributeAdmin, token: token});
+        SimpleStakeHolderContractArgs memory stakeHolderArgs = SimpleStakeHolderContractArgs({
+            roleAdmin: roleAdmin, upgradeAdmin: upgradeAdmin, distributeAdmin: distributeAdmin, token: token
+        });
         _deploySimple(deploymentArgs, stakeHolderArgs);
     }
 
@@ -132,8 +133,6 @@ contract StakeHolderScriptERC20 is Test {
         _unstake(IStakeHolder(stakeHolder), staker, amount);
     }
 
-
-
     /**
      * Deploy the OwnableCreate3Deployer contract. Set the owner to the
      * contract deployer.
@@ -148,12 +147,10 @@ contract StakeHolderScriptERC20 is Test {
      * Deploy StakeHolderERC20V2 using Create3, with the TimelockController.
      */
     function _deployComplex(
-        ComplexDeploymentArgs memory deploymentArgs, 
+        ComplexDeploymentArgs memory deploymentArgs,
         ComplexStakeHolderContractArgs memory stakeHolderArgs,
-        ComplexTimelockContractArgs memory timelockArgs)
-        private
-        returns (StakeHolderERC20V2 stakeHolderContract, TimelockController timelockController)
-    {
+        ComplexTimelockContractArgs memory timelockArgs
+    ) private returns (StakeHolderERC20V2 stakeHolderContract, TimelockController timelockController) {
         IDeployer ownableCreate3 = IDeployer(deploymentArgs.factory);
 
         bytes32 salt1 = keccak256(abi.encode(deploymentArgs.salt));
@@ -170,13 +167,8 @@ contract StakeHolderScriptERC20 is Test {
             executors[0] = timelockArgs.executorAdmin;
             // Create deployment bytecode and encode constructor args
             deploymentBytecode = abi.encodePacked(
-                type(TimelockController).creationCode, 
-                abi.encode(
-                    timelockArgs.timeDelayInSeconds,
-                    proposers,
-                    executors,
-                    address(0)
-                )
+                type(TimelockController).creationCode,
+                abi.encode(timelockArgs.timeDelayInSeconds, proposers, executors, address(0))
             );
             /// @dev Deploy the contract via the Ownable CREATE3 factory
             vm.startBroadcast(deploymentArgs.signer);
@@ -184,12 +176,9 @@ contract StakeHolderScriptERC20 is Test {
             vm.stopBroadcast();
         }
 
-
         // Deploy StakeHolderERC20V2 via the Ownable Create3 factory.
         // Create deployment bytecode and encode constructor args
-        deploymentBytecode = abi.encodePacked(
-            type(StakeHolderERC20V2).creationCode
-        );
+        deploymentBytecode = abi.encodePacked(type(StakeHolderERC20V2).creationCode);
         /// @dev Deploy the contract via the Ownable CREATE3 factory
         vm.startBroadcast(deploymentArgs.signer);
         address stakeHolderImplAddress = ownableCreate3.deploy(deploymentBytecode, salt2);
@@ -198,17 +187,15 @@ contract StakeHolderScriptERC20 is Test {
         // Deploy ERC1967Proxy via the Ownable Create3 factory.
         // Create init data for the ERC1967 Proxy
         bytes memory initData = abi.encodeWithSelector(
-            StakeHolderERC20V2.initialize.selector, 
+            StakeHolderERC20V2.initialize.selector,
             timelockAddress, // roleAdmin
             timelockAddress, // upgradeAdmin
             stakeHolderArgs.distributeAdmin,
             stakeHolderArgs.token
         );
         // Create deployment bytecode and encode constructor args
-        deploymentBytecode = abi.encodePacked(
-            type(ERC1967Proxy).creationCode,
-            abi.encode(stakeHolderImplAddress, initData)
-        );
+        deploymentBytecode =
+            abi.encodePacked(type(ERC1967Proxy).creationCode, abi.encode(stakeHolderImplAddress, initData));
         /// @dev Deploy the contract via the Ownable CREATE3 factory
         vm.startBroadcast(deploymentArgs.signer);
         address stakeHolderContractAddress = ownableCreate3.deploy(deploymentBytecode, salt3);
@@ -222,17 +209,16 @@ contract StakeHolderScriptERC20 is Test {
      * Deploy StakeHolderERC20V2 using an EOA and no time lock.
      */
     function _deploySimple(
-        SimpleDeploymentArgs memory deploymentArgs, 
-        SimpleStakeHolderContractArgs memory stakeHolderArgs)
-        private
-        returns (StakeHolderERC20V2 stakeHolderContract) {
-
+        SimpleDeploymentArgs memory deploymentArgs,
+        SimpleStakeHolderContractArgs memory stakeHolderArgs
+    ) private returns (StakeHolderERC20V2 stakeHolderContract) {
         bytes memory initData = abi.encodeWithSelector(
-            StakeHolderERC20V2.initialize.selector, 
+            StakeHolderERC20V2.initialize.selector,
             stakeHolderArgs.roleAdmin,
             stakeHolderArgs.upgradeAdmin,
             stakeHolderArgs.distributeAdmin,
-            stakeHolderArgs.token);
+            stakeHolderArgs.token
+        );
 
         vm.startBroadcast(deploymentArgs.deployer);
         StakeHolderERC20V2 impl = new StakeHolderERC20V2();
@@ -267,7 +253,6 @@ contract StakeHolderScriptERC20 is Test {
         vm.stopBroadcast();
     }
 
-
     function testComplex() external {
         /// @dev Fork the Immutable zkEVM testnet for this test
         string memory rpcURL = "https://rpc.testnet.immutable.com";
@@ -275,47 +260,48 @@ contract StakeHolderScriptERC20 is Test {
 
         address bank = makeAddr("bank");
         vm.startBroadcast(bank);
-        ERC20PresetFixedSupply erc20 = 
-            new ERC20PresetFixedSupply("Name", "SYM", 1000 ether, bank);
+        ERC20PresetFixedSupply erc20 = new ERC20PresetFixedSupply("Name", "SYM", 1000 ether, bank);
         vm.stopBroadcast();
 
         /// @dev These are Immutable zkEVM testnet values where necessary
         address immTestNetCreate3 = 0x37a59A845Bb6eD2034098af8738fbFFB9D589610;
         ComplexDeploymentArgs memory deploymentArgs = ComplexDeploymentArgs({
-            signer: 0xdDA0d9448Ebe3eA43aFecE5Fa6401F5795c19333,
-            factory: immTestNetCreate3,
-            salt: "salt"
+            signer: 0xdDA0d9448Ebe3eA43aFecE5Fa6401F5795c19333, factory: immTestNetCreate3, salt: "salt"
         });
 
         address distributeAdmin = makeAddr("distribute");
-        ComplexStakeHolderContractArgs memory stakeHolderArgs = 
-            ComplexStakeHolderContractArgs({
-                distributeAdmin: distributeAdmin,
-                token: address(erc20)
-            });
+        ComplexStakeHolderContractArgs memory stakeHolderArgs =
+            ComplexStakeHolderContractArgs({distributeAdmin: distributeAdmin, token: address(erc20)});
 
         uint256 delay = 604800; // 604800 seconds = 1 week
         address proposer = makeAddr("proposer");
         address executor = makeAddr("executor");
 
-        ComplexTimelockContractArgs memory timelockArgs = 
-            ComplexTimelockContractArgs({
-                timeDelayInSeconds: delay,
-                proposerAdmin: proposer,
-                executorAdmin: executor
-            });
+        ComplexTimelockContractArgs memory timelockArgs =
+            ComplexTimelockContractArgs({timeDelayInSeconds: delay, proposerAdmin: proposer, executorAdmin: executor});
 
         // Run deployment against forked testnet
         StakeHolderERC20V2 stakeHolder;
         TimelockController timelockController;
-        (stakeHolder, timelockController) = 
-            _deployComplex(deploymentArgs, stakeHolderArgs, timelockArgs);
+        (stakeHolder, timelockController) = _deployComplex(deploymentArgs, stakeHolderArgs, timelockArgs);
 
-        _commonTest(true, IStakeHolder(stakeHolder), address(timelockController), 
-            bank, immTestNetCreate3, address(0), address(0), distributeAdmin);
+        _commonTest(
+            true,
+            IStakeHolder(stakeHolder),
+            address(timelockController),
+            bank,
+            immTestNetCreate3,
+            address(0),
+            address(0),
+            distributeAdmin
+        );
 
-        assertTrue(timelockController.hasRole(timelockController.PROPOSER_ROLE(), proposer), "Proposer not set correcrly");
-        assertTrue(timelockController.hasRole(timelockController.EXECUTOR_ROLE(), executor), "Executor not set correcrly");
+        assertTrue(
+            timelockController.hasRole(timelockController.PROPOSER_ROLE(), proposer), "Proposer not set correcrly"
+        );
+        assertTrue(
+            timelockController.hasRole(timelockController.EXECUTOR_ROLE(), executor), "Executor not set correcrly"
+        );
         assertEq(timelockController.getMinDelay(), delay, "Delay not set correctly");
     }
 
@@ -328,44 +314,38 @@ contract StakeHolderScriptERC20 is Test {
         address bank = makeAddr("bank");
 
         vm.startBroadcast(deployer);
-        ERC20PresetFixedSupply erc20 = 
-            new ERC20PresetFixedSupply("Name", "SYM", 1000 ether, bank);
+        ERC20PresetFixedSupply erc20 = new ERC20PresetFixedSupply("Name", "SYM", 1000 ether, bank);
         vm.stopBroadcast();
 
         /// @dev These are Immutable zkEVM testnet values where necessary
-        SimpleDeploymentArgs memory deploymentArgs = SimpleDeploymentArgs({
-            deployer: deployer
-        });
+        SimpleDeploymentArgs memory deploymentArgs = SimpleDeploymentArgs({deployer: deployer});
 
         address roleAdmin = makeAddr("role");
         address upgradeAdmin = makeAddr("upgrade");
         address distributeAdmin = makeAddr("distribute");
 
-        SimpleStakeHolderContractArgs memory stakeHolderContractArgs = 
-            SimpleStakeHolderContractArgs({
-                roleAdmin: roleAdmin,
-                upgradeAdmin: upgradeAdmin,
-                distributeAdmin: distributeAdmin,
-                token: address(erc20)
-            });
+        SimpleStakeHolderContractArgs memory stakeHolderContractArgs = SimpleStakeHolderContractArgs({
+            roleAdmin: roleAdmin, upgradeAdmin: upgradeAdmin, distributeAdmin: distributeAdmin, token: address(erc20)
+        });
 
         // Run deployment against forked testnet
         StakeHolderERC20V2 stakeHolder = _deploySimple(deploymentArgs, stakeHolderContractArgs);
 
-        _commonTest(false, IStakeHolder(stakeHolder), address(0), 
-           bank, deployer, roleAdmin, upgradeAdmin, distributeAdmin);
+        _commonTest(
+            false, IStakeHolder(stakeHolder), address(0), bank, deployer, roleAdmin, upgradeAdmin, distributeAdmin
+        );
     }
 
     function _commonTest(
-            bool _isComplex, 
-            IStakeHolder _stakeHolder, 
-            address _timelockControl,
-            address _bank,
-            address _deployer,
-            address _roleAdmin,
-            address _upgradeAdmin,
-            address _distributeAdmin
-            ) private {
+        bool _isComplex,
+        IStakeHolder _stakeHolder,
+        address _timelockControl,
+        address _bank,
+        address _deployer,
+        address _roleAdmin,
+        address _upgradeAdmin,
+        address _distributeAdmin
+    ) private {
         address roleAdmin = _isComplex ? _timelockControl : _roleAdmin;
         address upgradeAdmin = _isComplex ? _timelockControl : _upgradeAdmin;
 
@@ -376,17 +356,24 @@ contract StakeHolderScriptERC20 is Test {
         {
             StakeHolderERC20V2 temp = new StakeHolderERC20V2();
             bytes32 defaultAdminRole = temp.DEFAULT_ADMIN_ROLE();
-            assertTrue(_stakeHolder.hasRole(_stakeHolder.UPGRADE_ROLE(), upgradeAdmin), "Upgrade admin should have upgrade role");
+            assertTrue(
+                _stakeHolder.hasRole(_stakeHolder.UPGRADE_ROLE(), upgradeAdmin),
+                "Upgrade admin should have upgrade role"
+            );
             assertTrue(_stakeHolder.hasRole(defaultAdminRole, roleAdmin), "Role admin should have default admin role");
-            assertTrue(_stakeHolder.hasRole(_stakeHolder.DISTRIBUTE_ROLE(), _distributeAdmin), "Distribute admin should have distribute role");
+            assertTrue(
+                _stakeHolder.hasRole(_stakeHolder.DISTRIBUTE_ROLE(), _distributeAdmin),
+                "Distribute admin should have distribute role"
+            );
             // The DEFAULT_ADMIN_ROLE should be revoked from the deployer account
             assertFalse(_stakeHolder.hasRole(defaultAdminRole, _deployer), "msg.sender should not be an admin");
         }
 
         address user1 = makeAddr("user1");
         vm.startBroadcast(_bank);
-        erc20.transfer(user1, 100 ether);
+        bool success = erc20.transfer(user1, 100 ether);
         vm.stopBroadcast();
+        require(success, "ERC20 transfer unexpectedly failed");
 
         _stake(_stakeHolder, user1, 10 ether);
 

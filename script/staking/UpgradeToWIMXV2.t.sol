@@ -1,19 +1,15 @@
-// Copyright (c) Immutable Pty Ltd 2018 - 2023
+// Copyright (c) Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
-import "forge-std/Test.sol";
-import {ERC1967Proxy} from "openzeppelin-contracts-4.9.3/proxy/ERC1967/ERC1967Proxy.sol";
+import {Test} from "forge-std/Test.sol";
+import {console} from "forge-std/console.sol";
 import {TimelockController} from "openzeppelin-contracts-4.9.3/governance/TimelockController.sol";
-import {IERC20} from "openzeppelin-contracts-4.9.3/token/ERC20/IERC20.sol";
 import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-4.9.3/proxy/utils/UUPSUpgradeable.sol";
-import {IAccessControlUpgradeable} from "openzeppelin-contracts-upgradeable-4.9.3/access/IAccessControlUpgradeable.sol";
 
 import {IStakeHolder} from "../../contracts/staking/IStakeHolder.sol";
 import {StakeHolderBase} from "../../contracts/staking/StakeHolderBase.sol";
 import {StakeHolderWIMXV2} from "../../contracts/staking/StakeHolderWIMXV2.sol";
-import {WIMX} from "../../contracts/staking/WIMX.sol";
-import {OwnableCreate3Deployer} from "../../contracts/deployer/create3/OwnableCreate3Deployer.sol";
 
 /**
  * @title IDeployer Interface
@@ -78,7 +74,6 @@ contract UpgradeToWIMXV2 is Test {
 
     TimelockController stakeHolderTimeDelay = TimelockController(payable(TIMELOCK_CONTROLLER));
 
-
     function deployV2() external {
         address stakeHolderV2 = _deployV2();
         console.log("Deployed StakeHolderWIMXV2 to: %s", stakeHolderV2);
@@ -103,9 +98,7 @@ contract UpgradeToWIMXV2 is Test {
 
         // Deploy StakeHolderWIMXV2 via the Ownable Create3 factory.
         // Create deployment bytecode and encode constructor args
-        bytes memory deploymentBytecode = abi.encodePacked(
-            type(StakeHolderWIMXV2).creationCode
-        );
+        bytes memory deploymentBytecode = abi.encodePacked(type(StakeHolderWIMXV2).creationCode);
         /// @dev Deploy the contract via the Ownable CREATE3 factory
         vm.startBroadcast(DEPLOYER_ADDRESS);
         address stakeHolderImplAddress = ownableCreate3.deploy(deploymentBytecode, salt);
@@ -116,7 +109,7 @@ contract UpgradeToWIMXV2 is Test {
     function _proposeUpgradeToV2(address _proposer, address _v2Impl) internal {
         assertTrue(stakeHolderTimeDelay.hasRole(PROPOSER_ROLE, _proposer), "Proposer does not have proposer role");
 
-        (address target, uint256 value, bytes memory data, bytes32 predecessor, bytes32 salt) = 
+        (address target, uint256 value, bytes memory data, bytes32 predecessor, bytes32 salt) =
             _getProposalParams(_v2Impl);
 
         vm.startBroadcast(_proposer);
@@ -128,7 +121,7 @@ contract UpgradeToWIMXV2 is Test {
         stakeHolderTimeDelay = TimelockController(payable(TIMELOCK_CONTROLLER));
         assertTrue(stakeHolderTimeDelay.hasRole(EXECUTOR_ROLE, _executor), "Executor does not have executor role");
 
-        (address target, uint256 value, bytes memory data, bytes32 predecessor, bytes32 salt) = 
+        (address target, uint256 value, bytes memory data, bytes32 predecessor, bytes32 salt) =
             _getProposalParams(_v2Impl);
 
         bytes32 id = stakeHolderTimeDelay.hashOperation(target, value, data, predecessor, salt);
@@ -142,15 +135,15 @@ contract UpgradeToWIMXV2 is Test {
         assertEq(stakeHolder.version(), 2, "Upgrade did not upgrade to version 2");
     }
 
-    function _getProposalParams(address _v2Impl) private returns (
-        address target, uint256 value, bytes memory data, bytes32 predecessor, bytes32 salt) {
-
+    function _getProposalParams(address _v2Impl)
+        private
+        returns (address target, uint256 value, bytes memory data, bytes32 predecessor, bytes32 salt)
+    {
         stakeHolderTimeDelay = TimelockController(payable(TIMELOCK_CONTROLLER));
         assertNotEq(_v2Impl, address(0), "StakeHolderV2 can not be address(0)");
 
         bytes memory callData = abi.encodeWithSelector(StakeHolderBase.upgradeStorage.selector, bytes(""));
-        bytes memory upgradeCall = abi.encodeWithSelector(
-            UUPSUpgradeable.upgradeToAndCall.selector, _v2Impl, callData);
+        bytes memory upgradeCall = abi.encodeWithSelector(UUPSUpgradeable.upgradeToAndCall.selector, _v2Impl, callData);
 
         target = STAKE_HOLDER_PROXY;
         value = 0;
@@ -158,7 +151,6 @@ contract UpgradeToWIMXV2 is Test {
         predecessor = bytes32(0);
         salt = bytes32(uint256(1));
     }
-
 
     // Test the remainder of the upgrade process.
     function testRemainderOfUpgradeProcessToV2() public {
@@ -178,7 +170,7 @@ contract UpgradeToWIMXV2 is Test {
             require(stakeHolderV2 == STAKE_HOLDER_V2, "Incorrect deployment address");
         }
 
-        (address target, uint256 value, bytes memory data, bytes32 predecessor, bytes32 salt) = 
+        (address target, uint256 value, bytes memory data, bytes32 predecessor, bytes32 salt) =
             _getProposalParams(stakeHolderV2);
         bytes32 id = stakeHolderTimeDelay.hashOperation(target, value, data, predecessor, salt);
         if (!stakeHolderTimeDelay.isOperation(id)) {

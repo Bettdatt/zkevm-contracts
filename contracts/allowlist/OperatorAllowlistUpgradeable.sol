@@ -1,9 +1,11 @@
-// Copyright Immutable Pty Ltd 2018 - 2024
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 pragma solidity >=0.8.19 <0.8.29;
 
 import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-4.9.3/proxy/utils/UUPSUpgradeable.sol";
-import {AccessControlEnumerableUpgradeable} from "openzeppelin-contracts-upgradeable-4.9.3/access/AccessControlEnumerableUpgradeable.sol";
+import {
+    AccessControlEnumerableUpgradeable
+} from "openzeppelin-contracts-upgradeable-4.9.3/access/AccessControlEnumerableUpgradeable.sol";
 
 // Introspection
 import {ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
@@ -25,7 +27,6 @@ contract OperatorAllowlistUpgradeable is
     IOperatorAllowlist
 {
     ///     =====       Events       =====
-
     /// @notice Emitted when a target address is added or removed from the Allowlist
     event AddressAllowlistChanged(address indexed target, bool added);
 
@@ -34,9 +35,11 @@ contract OperatorAllowlistUpgradeable is
     ///     =====   State Variables  =====
 
     /// @notice Only REGISTRAR_ROLE can invoke white listing registration and removal
+    // forge-lint: disable-next-line(unsafe-typecast)
     bytes32 public constant REGISTRAR_ROLE = bytes32("REGISTRAR_ROLE");
 
     /// @notice Only UPGRADE_ROLE can upgrade the contract
+    // forge-lint: disable-next-line(unsafe-typecast)
     bytes32 public constant UPGRADE_ROLE = bytes32("UPGRADE_ROLE");
 
     /// @notice Mapping of Allowlisted addresses
@@ -99,8 +102,7 @@ contract OperatorAllowlistUpgradeable is
     function addWalletToAllowlist(address walletAddr) external onlyRole(REGISTRAR_ROLE) {
         // get bytecode of wallet
         bytes32 codeHash;
-        // solhint-disable-next-line no-inline-assembly
-        assembly {
+        assembly ("memory-safe") {
             codeHash := extcodehash(walletAddr)
         }
         bytecodeAllowlist[codeHash] = true;
@@ -119,8 +121,7 @@ contract OperatorAllowlistUpgradeable is
     function removeWalletFromAllowlist(address walletAddr) external onlyRole(REGISTRAR_ROLE) {
         // get bytecode of wallet
         bytes32 codeHash;
-        // solhint-disable-next-line no-inline-assembly
-        assembly {
+        assembly ("memory-safe") {
             codeHash := extcodehash(walletAddr)
         }
         delete bytecodeAllowlist[codeHash];
@@ -144,8 +145,7 @@ contract OperatorAllowlistUpgradeable is
 
         // Check if caller is a Allowlisted smart contract wallet
         bytes32 codeHash;
-        // solhint-disable-next-line no-inline-assembly
-        assembly {
+        assembly ("memory-safe") {
             codeHash := extcodehash(target)
         }
         if (bytecodeAllowlist[codeHash]) {
@@ -162,19 +162,21 @@ contract OperatorAllowlistUpgradeable is
      * @notice ERC-165 interface support
      * @param interfaceId The interface identifier, which is a 4-byte selector.
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(ERC165, AccessControlEnumerableUpgradeable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC165, AccessControlEnumerableUpgradeable)
+        returns (bool)
+    {
         return interfaceId == type(IOperatorAllowlist).interfaceId || super.supportsInterface(interfaceId);
     }
 
     // Override the _authorizeUpgrade function
-    // solhint-disable-next-line no-empty-blocks
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADE_ROLE) {}
 
     /// @notice storage gap for additional variables for upgrades
     // slither-disable-start unused-state
-    // solhint-disable-next-line var-name-mixedcase
     uint256[20] private __OperatorAllowlistUpgradeableGap;
     // slither-disable-end unused-state
 }

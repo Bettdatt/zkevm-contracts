@@ -1,10 +1,7 @@
-// Copyright Immutable Pty Ltd 2018 - 2025
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 pragma solidity >=0.8.19 <0.8.29;
 
-// solhint-disable-next-line no-global-import
-import "forge-std/Test.sol";
-import {StakeHolderWIMX} from "../../contracts/staking/StakeHolderWIMX.sol";
 import {IStakeHolder} from "../../contracts/staking/IStakeHolder.sol";
 import {IStakeHolderV2} from "../../contracts/staking/IStakeHolderV2.sol";
 import {StakeHolderBaseTest} from "./StakeHolderBase.t.sol";
@@ -13,7 +10,7 @@ import {StakeHolderOperationalWIMXTest} from "./StakeHolderOperationalWIMX.t.sol
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 contract StakeHolderOperationalWIMXTestV2 is StakeHolderOperationalWIMXTest, StakeHolderOperationalBaseTestV2 {
-    function setUp() public override (StakeHolderOperationalWIMXTest, StakeHolderBaseTest) {
+    function setUp() public override(StakeHolderOperationalWIMXTest, StakeHolderBaseTest) {
         StakeHolderOperationalWIMXTest.setUp();
         upgradeToStakeHolderWIMXV2();
     }
@@ -27,9 +24,13 @@ contract StakeHolderOperationalWIMXTestV2 is StakeHolderOperationalWIMXTest, Sta
         Address.sendValue(payable(address(stakeHolder)), amount);
     }
 
-
-    function _stakeFor(address _distributor, uint256 _total, IStakeHolder.AccountAmount[] memory _accountAmounts, 
-        bool _hasError, bytes memory _error) internal override {
+    function _stakeFor(
+        address _distributor,
+        uint256 _total,
+        IStakeHolder.AccountAmount[] memory _accountAmounts,
+        bool _hasError,
+        bytes memory _error
+    ) internal override {
         if (_hasError) {
             vm.expectRevert(_error);
         }

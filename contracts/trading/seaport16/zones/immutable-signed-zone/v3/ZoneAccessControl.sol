@@ -1,7 +1,5 @@
-// Copyright (c) Immutable Pty Ltd 2018 - 2024
+// Copyright (c) Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache-2
-
-// solhint-disable-next-line compiler-version
 pragma solidity ^0.8.20;
 
 import {AccessControl} from "openzeppelin-contracts-5.0.2/access/AccessControl.sol";
@@ -14,6 +12,7 @@ import {ZoneAccessControlEventsAndErrors} from "./interfaces/ZoneAccessControlEv
  */
 abstract contract ZoneAccessControl is AccessControlEnumerable, ZoneAccessControlEventsAndErrors {
     /// @dev Zone manager manages the zone.
+    // forge-lint: disable-next-line(unsafe-typecast)
     bytes32 public constant ZONE_MANAGER_ROLE = bytes32("ZONE_MANAGER");
 
     /**
@@ -30,10 +29,11 @@ abstract contract ZoneAccessControl is AccessControlEnumerable, ZoneAccessContro
     /**
      * @inheritdoc AccessControl
      */
-    function revokeRole(
-        bytes32 role,
-        address account
-    ) public override(AccessControl, IAccessControl) onlyRole(getRoleAdmin(role)) {
+    function revokeRole(bytes32 role, address account)
+        public
+        override(AccessControl, IAccessControl)
+        onlyRole(getRoleAdmin(role))
+    {
         if (role == DEFAULT_ADMIN_ROLE && super.getRoleMemberCount(DEFAULT_ADMIN_ROLE) == 1) {
             revert LastDefaultAdminRole(account);
         }

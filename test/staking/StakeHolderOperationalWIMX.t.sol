@@ -1,14 +1,9 @@
-// Copyright Immutable Pty Ltd 2018 - 2025
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 pragma solidity >=0.8.19 <0.8.29;
 
-// solhint-disable-next-line no-global-import
-import "forge-std/Test.sol";
-import {StakeHolderWIMX} from "../../contracts/staking/StakeHolderWIMX.sol";
 import {IStakeHolder} from "../../contracts/staking/IStakeHolder.sol";
-import {WIMX} from "../../contracts/staking/WIMX.sol";
 import {StakeHolderOperationalBaseTest} from "./StakeHolderOperationalBase.t.sol";
-import {ERC1967Proxy} from "openzeppelin-contracts-4.9.3/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract StakeHolderOperationalWIMXTest is StakeHolderOperationalBaseTest {
     function setUp() public virtual override {
@@ -17,8 +12,7 @@ contract StakeHolderOperationalWIMXTest is StakeHolderOperationalBaseTest {
         deployStakeHolderWIMXV1();
     }
 
-
-//TODO
+    //TODO
 
     // function testUnstakeReentrantAttack() public {
     //     StakeHolderAttackWallet attacker = new StakeHolderAttackWallet(address(stakeHolder));
@@ -45,16 +39,19 @@ contract StakeHolderOperationalWIMXTest is StakeHolderOperationalBaseTest {
         IStakeHolder.AccountAmount[] memory accountsAmounts = new IStakeHolder.AccountAmount[](2);
         accountsAmounts[0] = IStakeHolder.AccountAmount(staker2, 0.5 ether);
         accountsAmounts[1] = IStakeHolder.AccountAmount(staker3, 1 ether);
-        _distributeRewards(distributeAdmin, 1 ether, accountsAmounts,
-            abi.encodeWithSelector(IStakeHolder.MismatchMsgValueAmount.selector, 1 ether, 1.5 ether));
+        _distributeRewards(
+            distributeAdmin,
+            1 ether,
+            accountsAmounts,
+            abi.encodeWithSelector(IStakeHolder.MismatchMsgValueAmount.selector, 1 ether, 1.5 ether)
+        );
     }
-
 
     function testAddStakeMismatch() public {
         uint256 amount = 100 ether;
         _deal(staker1, amount);
         vm.prank(staker1);
-        vm.expectRevert(abi.encodeWithSelector(IStakeHolder.MismatchMsgValueAmount.selector, amount, amount+1));
+        vm.expectRevert(abi.encodeWithSelector(IStakeHolder.MismatchMsgValueAmount.selector, amount, amount + 1));
         stakeHolder.stake{value: amount}(amount + 1);
     }
 
@@ -69,17 +66,25 @@ contract StakeHolderOperationalWIMXTest is StakeHolderOperationalBaseTest {
         vm.prank(_staker);
         stakeHolder.stake{value: _amount}(_amount);
     }
-    function _distributeRewards(address _distributor, uint256 _total, IStakeHolder.AccountAmount[] memory _accountAmounts, 
-        bool _hasError, bytes memory _error) internal override {
+
+    function _distributeRewards(
+        address _distributor,
+        uint256 _total,
+        IStakeHolder.AccountAmount[] memory _accountAmounts,
+        bool _hasError,
+        bytes memory _error
+    ) internal override {
         if (_hasError) {
             vm.expectRevert(_error);
         }
         vm.prank(_distributor);
         stakeHolder.distributeRewards{value: _total}(_accountAmounts);
     }
+
     function _getBalanceStaker(address _staker) internal view override returns (uint256) {
         return _staker.balance;
     }
+
     function _getBalanceStakeHolderContract() internal view override returns (uint256) {
         return wimxErc20.balanceOf(address(stakeHolder));
     }

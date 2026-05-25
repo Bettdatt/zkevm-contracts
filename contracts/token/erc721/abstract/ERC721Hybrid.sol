@@ -1,4 +1,4 @@
-// Copyright Immutable Pty Ltd 2018 - 2023
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 pragma solidity >=0.8.19 <0.8.29;
 
@@ -7,6 +7,8 @@ import {BitMaps} from "@openzeppelin/contracts/utils/structs/BitMaps.sol";
 import {ERC721Psi, ERC721PsiBurnable} from "../erc721psi/ERC721PsiBurnable.sol";
 // Errors
 import {IImmutableERC721Errors} from "../../../errors/Errors.sol";
+
+// forge-lint: disable-start(pascal-case-struct)
 
 /*
 This contract allows for minting with one of two strategies:
@@ -183,12 +185,11 @@ abstract contract ERC721Hybrid is ERC721PsiBurnable, ERC721, IImmutableERC721Err
     /**
      * @notice refer to erc721 or erc721psi
      */
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory _data
-    ) public virtual override(ERC721, ERC721Psi) {
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory _data)
+        public
+        virtual
+        override(ERC721, ERC721Psi)
+    {
         if (tokenId < mintBatchByQuantityThreshold()) {
             return ERC721.safeTransferFrom(from, to, tokenId, _data);
         }
@@ -198,10 +199,13 @@ abstract contract ERC721Hybrid is ERC721PsiBurnable, ERC721, IImmutableERC721Err
     /**
      * @notice refer to erc721 or erc721psi
      */
-    function isApprovedForAll(
-        address owner,
-        address operator
-    ) public view virtual override(ERC721, ERC721Psi) returns (bool) {
+    function isApprovedForAll(address owner, address operator)
+        public
+        view
+        virtual
+        override(ERC721, ERC721Psi)
+        returns (bool)
+    {
         return ERC721.isApprovedForAll(owner, operator);
     }
 
@@ -409,12 +413,11 @@ abstract contract ERC721Hybrid is ERC721PsiBurnable, ERC721, IImmutableERC721Err
     /**
      * @notice refer to erc721 or erc721psi
      */
-    function _safeTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory _data
-    ) internal virtual override(ERC721, ERC721Psi) {
+    function _safeTransfer(address from, address to, uint256 tokenId, bytes memory _data)
+        internal
+        virtual
+        override(ERC721, ERC721Psi)
+    {
         if (tokenId < mintBatchByQuantityThreshold()) {
             return ERC721._safeTransfer(from, to, tokenId, _data);
         }
@@ -455,10 +458,13 @@ abstract contract ERC721Hybrid is ERC721PsiBurnable, ERC721, IImmutableERC721Err
     /**
      * @notice refer to erc721 or erc721psi
      */
-    function _isApprovedOrOwner(
-        address spender,
-        uint256 tokenId
-    ) internal view virtual override(ERC721, ERC721Psi) returns (bool) {
+    function _isApprovedOrOwner(address spender, uint256 tokenId)
+        internal
+        view
+        virtual
+        override(ERC721, ERC721Psi)
+        returns (bool)
+    {
         if (tokenId < mintBatchByQuantityThreshold()) {
             return ERC721._isApprovedOrOwner(spender, tokenId);
         }
@@ -488,3 +494,4 @@ abstract contract ERC721Hybrid is ERC721PsiBurnable, ERC721, IImmutableERC721Err
         return ERC721._baseURI();
     }
 }
+// forge-lint: disable-end(pascal-case-struct)

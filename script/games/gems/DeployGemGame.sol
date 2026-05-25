@@ -1,9 +1,9 @@
-// Copyright (c) Immutable Pty Ltd 2018 - 2023
+// Copyright (c) Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache-2.0
 
 pragma solidity ^0.8.20;
 
-import "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {GemGame} from "../../../contracts/games/gems/GemGame.sol";
 
 /**
@@ -52,9 +52,7 @@ contract DeployGemGame is Test {
         });
 
         GemGameContractArgs memory gemGameContractArgs = GemGameContractArgs({
-            pauser: makeAddr("pause"),
-            unpauser: makeAddr("unpause"),
-            defaultAdmin: makeAddr("admin")
+            pauser: makeAddr("pause"), unpauser: makeAddr("unpause"), defaultAdmin: makeAddr("admin")
         });
 
         // Run deployment against forked testnet

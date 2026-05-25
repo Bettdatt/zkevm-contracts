@@ -10,7 +10,7 @@
  *  - github: https://github.com/estarriolvetch/ERC721Psi
  *  - npm: https://www.npmjs.com/package/erc721psi
  */
-// solhint-disable
+// forge-lint: disable-start(all)
 pragma solidity >=0.8.19 <0.8.29;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -83,10 +83,8 @@ contract ERC721Psi is Context, ERC165, IERC721, IERC721Metadata {
      * @dev See {IERC165-supportsInterface}.
      */
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
-        return
-            interfaceId == type(IERC721).interfaceId ||
-            interfaceId == type(IERC721Metadata).interfaceId ||
-            super.supportsInterface(interfaceId);
+        return interfaceId == type(IERC721).interfaceId || interfaceId == type(IERC721Metadata).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
     /**
@@ -110,7 +108,7 @@ contract ERC721Psi is Context, ERC165, IERC721, IERC721Metadata {
      * @dev See {IERC721-ownerOf}.
      */
     function ownerOf(uint256 tokenId) public view virtual override returns (address) {
-        (address owner, ) = _ownerAndBatchHeadOf(tokenId);
+        (address owner,) = _ownerAndBatchHeadOf(tokenId);
         return owner;
     }
 
@@ -199,7 +197,6 @@ contract ERC721Psi is Context, ERC165, IERC721, IERC721Metadata {
      * @dev See {IERC721-transferFrom}.
      */
     function transferFrom(address from, address to, uint256 tokenId) public virtual override {
-        //solhint-disable-next-line max-line-length
         require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Psi: transfer caller is not owner nor approved");
 
         _transfer(from, to, tokenId);
@@ -241,8 +238,7 @@ contract ERC721Psi is Context, ERC165, IERC721, IERC721Metadata {
     function _safeTransfer(address from, address to, uint256 tokenId, bytes memory _data) internal virtual {
         _transfer(from, to, tokenId);
         require(
-            _checkOnERC721Received(from, to, tokenId, 1, _data),
-            "ERC721Psi: transfer to non ERC721Receiver implementer"
+            _checkOnERC721Received(from, to, tokenId, 1, _data), "ERC721Psi: transfer to non ERC721Receiver implementer"
         );
     }
 
@@ -313,7 +309,7 @@ contract ERC721Psi is Context, ERC165, IERC721, IERC721Metadata {
         // The duplicated `log4` removes an extra check and reduces stack juggling.
         // The assembly, together with the surrounding Solidity code, have been
         // delicately arranged to nudge the compiler into producing optimized opcodes.
-        assembly {
+        assembly ("memory-safe") {
             // Mask `to` to the lower 160 bits, in case the upper bits somehow aren't clean.
             toMasked := and(to, _BITMASK_ADDRESS)
             // Emit the `Transfer` event.
@@ -419,7 +415,7 @@ contract ERC721Psi is Context, ERC165, IERC721, IERC721Metadata {
                     if (reason.length == 0) {
                         revert("ERC721Psi: transfer to non ERC721Receiver implementer");
                     } else {
-                        assembly {
+                        assembly ("memory-safe") {
                             revert(add(32, reason), mload(reason))
                         }
                     }
@@ -452,7 +448,6 @@ contract ERC721Psi is Context, ERC165, IERC721, IERC721Metadata {
      * transferred to `to`.
      * - When `from` is zero, `tokenId` will be minted for `to`.
      */
-    // solhint-disable-next-line no-empty-blocks
     function _beforeTokenTransfers(address from, address to, uint256 startTokenId, uint256 quantity) internal virtual {}
 
     /**
@@ -467,6 +462,6 @@ contract ERC721Psi is Context, ERC165, IERC721, IERC721Metadata {
      * - when `from` and `to` are both non-zero.
      * - `from` and `to` are never both zero.
      */
-    // solhint-disable-next-line no-empty-blocks
     function _afterTokenTransfers(address from, address to, uint256 startTokenId, uint256 quantity) internal virtual {}
 }
+// forge-lint: disable-end(all)

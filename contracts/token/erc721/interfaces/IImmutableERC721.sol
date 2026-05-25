@@ -1,4 +1,4 @@
-// Copyright Immutable Pty Ltd 2018 - 2025
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 pragma solidity >=0.8.19 <0.8.29;
 
@@ -125,25 +125,21 @@ interface IImmutableERC721 is
      * @notice Returns the domain separator used in the encoding of the signature for permits, as defined by EIP-712
      * @return the bytes32 domain separator
      */
-    // solhint-disable-next-line func-name-mixedcase
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 
     /**
      * @notice Return the value for the default admin role.
      */
-    // solhint-disable-next-line func-name-mixedcase
     function DEFAULT_ADMIN_ROLE() external pure returns (bytes32);
 
     /**
      * @notice Common URIs for individual token URIs
      */
-    // solhint-disable-next-line func-name-mixedcase
     function baseURI() external view returns (string memory);
 
     /**
      * @notice Contract level metadata
      */
-    // solhint-disable-next-line func-name-mixedcase
     function contractURI() external view returns (string memory);
 
     /**

@@ -1,20 +1,12 @@
-// Copyright (c) Immutable Pty Ltd 2018 - 2023
+// Copyright (c) Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
-import "forge-std/Test.sol";
-import {ERC1967Proxy} from "openzeppelin-contracts-4.9.3/proxy/ERC1967/ERC1967Proxy.sol";
+import {Test} from "forge-std/Test.sol";
 import {TimelockController} from "openzeppelin-contracts-4.9.3/governance/TimelockController.sol";
-import {IERC20} from "openzeppelin-contracts-4.9.3/token/ERC20/IERC20.sol";
-import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-4.9.3/proxy/utils/UUPSUpgradeable.sol";
 import {IAccessControlUpgradeable} from "openzeppelin-contracts-upgradeable-4.9.3/access/IAccessControlUpgradeable.sol";
 
 import {IStakeHolder} from "../../contracts/staking/IStakeHolder.sol";
-import {StakeHolderBase} from "../../contracts/staking/StakeHolderBase.sol";
-import {StakeHolderWIMXV2} from "../../contracts/staking/StakeHolderWIMXV2.sol";
-import {WIMX} from "../../contracts/staking/WIMX.sol";
-import {OwnableCreate3Deployer} from "../../contracts/deployer/create3/OwnableCreate3Deployer.sol";
-
 
 /**
  * @notice Script for proposing and executing changes to which account has distributor role.
@@ -59,7 +51,6 @@ contract ChangeDistributor is Test {
 
     TimelockController stakeHolderTimeDelay = TimelockController(payable(TIMELOCK_CONTROLLER));
 
-
     function proposeChangeDistributor() external {
         uint256 isMainnet = vm.envUint("IMMUTABLE_NETWORK");
         address newDistributor = (isMainnet == 1) ? MAINNET_NEW_DISTRIBUTOR : TESTNET_NEW_DISTRIBUTOR;
@@ -77,8 +68,7 @@ contract ChangeDistributor is Test {
     function _proposeChangeDistributor(address _proposer, address _newDistributor) internal {
         assertTrue(stakeHolderTimeDelay.hasRole(PROPOSER_ROLE, _proposer), "Proposer does not have proposer role");
 
-        (address[] memory targets, uint256[] memory values, bytes[] memory data, 
-            bytes32 predecessor, bytes32 salt) = 
+        (address[] memory targets, uint256[] memory values, bytes[] memory data, bytes32 predecessor, bytes32 salt) =
             _getChangeDistributorProposalParams(OLD_DISTRIBUTOR, _newDistributor);
 
         vm.startBroadcast(_proposer);
@@ -90,8 +80,7 @@ contract ChangeDistributor is Test {
         stakeHolderTimeDelay = TimelockController(payable(TIMELOCK_CONTROLLER));
         assertTrue(stakeHolderTimeDelay.hasRole(EXECUTOR_ROLE, _executor), "Executor does not have executor role");
 
-        (address[] memory targets, uint256[] memory values, bytes[] memory data, 
-            bytes32 predecessor, bytes32 salt) = 
+        (address[] memory targets, uint256[] memory values, bytes[] memory data, bytes32 predecessor, bytes32 salt) =
             _getChangeDistributorProposalParams(OLD_DISTRIBUTOR, _newDistributor);
 
         bytes32 id = stakeHolderTimeDelay.hashOperationBatch(targets, values, data, predecessor, salt);
@@ -102,19 +91,22 @@ contract ChangeDistributor is Test {
         vm.stopBroadcast();
     }
 
-    function _getChangeDistributorProposalParams(address _oldAccount, address _newAccount) private returns (
-        address[] memory targets, uint256[] memory values, bytes[] memory data, bytes32 predecessor, bytes32 salt) {
-
+    function _getChangeDistributorProposalParams(address _oldAccount, address _newAccount)
+        private
+        returns (
+            address[] memory targets,
+            uint256[] memory values,
+            bytes[] memory data,
+            bytes32 predecessor,
+            bytes32 salt
+        )
+    {
         stakeHolderTimeDelay = TimelockController(payable(TIMELOCK_CONTROLLER));
 
-        bytes memory callData0 = abi.encodeWithSelector(
-            IAccessControlUpgradeable.revokeRole.selector, 
-            DISTRIBUTOR_ROLE,
-            _oldAccount);
-        bytes memory callData1 = abi.encodeWithSelector(
-            IAccessControlUpgradeable.grantRole.selector, 
-            DISTRIBUTOR_ROLE,
-            _newAccount);
+        bytes memory callData0 =
+            abi.encodeWithSelector(IAccessControlUpgradeable.revokeRole.selector, DISTRIBUTOR_ROLE, _oldAccount);
+        bytes memory callData1 =
+            abi.encodeWithSelector(IAccessControlUpgradeable.grantRole.selector, DISTRIBUTOR_ROLE, _newAccount);
 
         targets = new address[](2);
         values = new uint256[](2);
@@ -130,7 +122,6 @@ contract ChangeDistributor is Test {
         salt = bytes32(uint256(1));
     }
 
-
     // Test the remainder of the upgrade process.
     function testRemainderChangeDistributor() public {
         uint256 mainnetFork = vm.createFork(MAINNET_RPC_URL);
@@ -142,8 +133,7 @@ contract ChangeDistributor is Test {
             return;
         }
 
-        (address[] memory targets, uint256[] memory values, bytes[] memory data, 
-            bytes32 predecessor, bytes32 salt) = 
+        (address[] memory targets, uint256[] memory values, bytes[] memory data, bytes32 predecessor, bytes32 salt) =
             _getChangeDistributorProposalParams(OLD_DISTRIBUTOR, MAINNET_NEW_DISTRIBUTOR);
         bytes32 id = stakeHolderTimeDelay.hashOperationBatch(targets, values, data, predecessor, salt);
 

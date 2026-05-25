@@ -1,16 +1,13 @@
-// Copyright Immutable Pty Ltd 2018 - 2025
+// Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 pragma solidity >=0.8.19 <0.8.29;
 
-// solhint-disable-next-line no-global-import
-import "forge-std/Test.sol";
 import {IStakeHolder} from "../../contracts/staking/IStakeHolder.sol";
 import {StakeHolderBase} from "../../contracts/staking/StakeHolderBase.sol";
 import {StakeHolderConfigBaseTest} from "./StakeHolderConfigBase.t.sol";
 
-
 abstract contract StakeHolderConfigBaseTestV2 is StakeHolderConfigBaseTest {
-    function testUpgradeToV2() override public {
+    function testUpgradeToV2() public override {
         IStakeHolder v2Impl = _deployV2();
         bytes memory initData = abi.encodeWithSelector(StakeHolderBase.upgradeStorage.selector, bytes(""));
         vm.prank(upgradeAdmin);
@@ -18,7 +15,7 @@ abstract contract StakeHolderConfigBaseTestV2 is StakeHolderConfigBaseTest {
         StakeHolderBase(address(stakeHolder)).upgradeToAndCall(address(v2Impl), initData);
     }
 
-    function testUpgradeToV1() override public {
+    function testUpgradeToV1() public override {
         IStakeHolder v1Impl = _deployV1();
         bytes memory initData = abi.encodeWithSelector(StakeHolderBase.upgradeStorage.selector, bytes(""));
         vm.expectRevert(abi.encodeWithSelector(IStakeHolder.CanNotUpgradeToLowerOrSameVersion.selector, 2));
@@ -26,7 +23,7 @@ abstract contract StakeHolderConfigBaseTestV2 is StakeHolderConfigBaseTest {
         StakeHolderBase(address(stakeHolder)).upgradeToAndCall(address(v1Impl), initData);
     }
 
-    function testDowngradeV2ToV1() override public {
+    function testDowngradeV2ToV1() public override {
         // This test doesn't make sense in the context of V2.
     }
 
@@ -53,5 +50,5 @@ abstract contract StakeHolderConfigBaseTestV2 is StakeHolderConfigBaseTest {
         StakeHolderBase(address(stakeHolder)).upgradeToAndCall(address(v2Impl), initData);
     }
 
-    function _deployV3() internal virtual returns(IStakeHolder);
+    function _deployV3() internal virtual returns (IStakeHolder);
 }
