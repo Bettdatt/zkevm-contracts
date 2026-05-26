@@ -34,8 +34,8 @@ Installing this package pulls **runtime dependencies from npm** — the publishe
 
 Solidity imports use paths such as `@imtbl/contracts/contracts/...` (see [package.json](./package.json) `exports`). Sources under `contracts/` depend on libraries that **you must supply** via your toolchain — for example:
 
-- **`@openzeppelin/contracts`** — listed as a **peer dependency** (`^4.9.3 || ^5.0.0`); align with presets that mix v4 and v5 remappings used in this repo.
-- **`@openzeppelin/contracts-upgradeable`** — for upgradeable presets (typically v4.9.x path `openzeppelin-contracts-upgradeable-4.9.3`).
+- **`@openzeppelin/contracts`** — listed as a **peer dependency** (`^4.9.6 || ^5.6.1`); align with presets that mix v4 and v5 remappings used in this repo.
+- **`@openzeppelin/contracts-upgradeable`** — for upgradeable presets (typically v4.9.x path `openzeppelin-contracts-upgradeable-4.9.6`).
 - **`@axelar-network/axelar-gmp-sdk-solidity`** — for deploy / GMP-related contracts (e.g. `OwnableCreate3Deployer`).
 - **Immutable Seaport forks** — Seaport-related files expect remappings compatible with Immutable’s Seaport branches (see [remappings.txt](./remappings.txt) and [`.gitmodules`](./.gitmodules) for the git URLs and aliases used in this repo: `seaport`, `seaport-core`, `seaport-types`, `seaport-16`, `seaport-core-16`, `seaport-types-16`).
 
@@ -48,7 +48,7 @@ Solidity imports use paths such as `@imtbl/contracts/contracts/...` (see [packag
 Once `@imtbl/contracts` is installed, use the Solidity files from the package by importing them:
 
 ```solidity
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
 import "@imtbl/contracts/contracts/token/erc721/preset/ImmutableERC721.sol";
 

@@ -1,11 +1,11 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
 import {IDeployer} from "@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IDeployer.sol";
-import {Pausable} from "@openzeppelin/contracts/security/Pausable.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {AccessControlEnumerable} from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import {Pausable} from "openzeppelin-contracts-5/utils/Pausable.sol";
+import {Ownable} from "openzeppelin-contracts-5/access/Ownable.sol";
+import {AccessControlEnumerable} from "openzeppelin-contracts-5/access/extensions/AccessControlEnumerable.sol";
 
 /**
  * @title AccessControlledDeployer

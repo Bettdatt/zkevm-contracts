@@ -1,29 +1,21 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
-// Signature Validation
-import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
-
-// Access Control
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-
-// Reentrancy Guard
-import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
-// EIP-712 Typed Structs
-import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import {SignatureChecker} from "openzeppelin-contracts-5/utils/cryptography/SignatureChecker.sol";
+import {AccessControlEnumerable} from "openzeppelin-contracts-5/access/extensions/AccessControlEnumerable.sol";
+import {ReentrancyGuard} from "openzeppelin-contracts-5/utils/ReentrancyGuard.sol";
+import {EIP712} from "openzeppelin-contracts-5/utils/cryptography/EIP712.sol";
 
 /**
  *
  * @title GuardedMulticaller2 contract
- * @author Immutable
  * @notice This contract is used to batch calls to other contracts.
  * @dev This contract is not designed to be upgradeable. If an issue is found with this contract,
  *  a new version will be deployed. All approvals granted to this contract will be revoked before
  *  a new version is deployed. Approvals will be granted to the new contract.
  */
-contract GuardedMulticaller2 is AccessControl, ReentrancyGuard, EIP712 {
+contract GuardedMulticaller2 is AccessControlEnumerable, ReentrancyGuard, EIP712 {
     /// @dev Struct for call data
     struct Call {
         address target;

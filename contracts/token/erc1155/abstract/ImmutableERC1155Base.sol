@@ -1,11 +1,11 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
-import {ERC1155Permit, ERC1155} from "../../../token/erc1155/abstract/ERC1155Permit.sol";
+import {ERC1155Permit, ERC1155} from "./ERC1155Permit.sol";
 
 // Allowlist
-import {ERC2981} from "@openzeppelin/contracts/token/common/ERC2981.sol";
+import {ERC2981} from "openzeppelin-contracts-4/token/common/ERC2981.sol";
 import {OperatorAllowlistEnforced} from "../../../allowlist/OperatorAllowlistEnforced.sol";
 
 import {AccessControlEnumerable, MintingAccessControl} from "../../../access/MintingAccessControl.sol";

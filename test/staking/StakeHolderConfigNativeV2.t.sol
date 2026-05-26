@@ -1,13 +1,13 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
 import {StakeHolderNative} from "../../contracts/staking/StakeHolderNative.sol";
 import {StakeHolderNativeV2} from "../../contracts/staking/StakeHolderNativeV2.sol";
 import {StakeHolderBaseV2} from "../../contracts/staking/StakeHolderBaseV2.sol";
 import {IStakeHolder} from "../../contracts/staking/IStakeHolder.sol";
 import {StakeHolderConfigBaseTestV2} from "./StakeHolderConfigBaseV2.t.sol";
-import {ERC1967Proxy} from "openzeppelin-contracts-4.9.3/proxy/ERC1967/ERC1967Proxy.sol";
+import {ERC1967Proxy} from "openzeppelin-contracts-5/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract StakeHolderNativeV3a is StakeHolderNativeV2 {
     function upgradeStorage(

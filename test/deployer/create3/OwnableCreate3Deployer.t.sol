@@ -1,11 +1,12 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
 import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 import {IDeploy} from "@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IDeploy.sol";
-import {ERC20Mock} from "@openzeppelin/contracts/mocks/ERC20Mock.sol";
+import {ERC20Mock} from "openzeppelin-contracts-5/mocks/token/ERC20Mock.sol";
+import {Ownable} from "openzeppelin-contracts-5/access/Ownable.sol";
 import {
     ERC20MintableBurnable
 } from "@axelar-network/axelar-gmp-sdk-solidity/contracts/test/token/ERC20MintableBurnable.sol";
@@ -50,7 +51,7 @@ contract OwnableCreate3DeployerTest is Test, Create3Utils {
 
         address nonOwner = address(0x1);
         vm.startPrank(nonOwner);
-        vm.expectRevert("Ownable: caller is not the owner");
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, nonOwner));
         factory.deploy(erc20MockBytecode, erc20MockSalt);
     }
 
@@ -113,7 +114,7 @@ contract OwnableCreate3DeployerTest is Test, Create3Utils {
         assertEq(factory.owner(), newOwner, "owner did not change as expected");
 
         // check that the old owner cannot deploy
-        vm.expectRevert("Ownable: caller is not the owner");
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, factoryOwner));
         factory.deploy(erc20MockBytecode, erc20MockSalt);
 
         // test that the new owner can deploy
@@ -157,7 +158,7 @@ contract OwnableCreate3DeployerTest is Test, Create3Utils {
 
         address nonOwner = address(0x1);
         vm.startPrank(nonOwner);
-        vm.expectRevert("Ownable: caller is not the owner");
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, nonOwner));
         factory.deployAndInit(erc20MockBytecode, erc20MockSalt, "");
     }
 

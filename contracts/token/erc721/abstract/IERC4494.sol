@@ -1,8 +1,8 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
-import {IERC165} from "@openzeppelin/contracts/interfaces/IERC165.sol";
+import {IERC165} from "openzeppelin-contracts-4/interfaces/IERC165.sol";
 
 ///
 /// @dev Interface for token permits for ERC721

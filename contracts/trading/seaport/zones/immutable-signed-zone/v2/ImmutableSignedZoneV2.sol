@@ -1,13 +1,13 @@
 // Copyright (c) Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache-2
 
-pragma solidity 0.8.20;
+pragma solidity >=0.8.19 <=0.8.27;
 
-import {AccessControlEnumerable} from "openzeppelin-contracts-5.0.2/access/extensions/AccessControlEnumerable.sol";
-import {ECDSA} from "openzeppelin-contracts-5.0.2/utils/cryptography/ECDSA.sol";
-import {MessageHashUtils} from "openzeppelin-contracts-5.0.2/utils/cryptography/MessageHashUtils.sol";
-import {ERC165} from "openzeppelin-contracts-5.0.2/utils/introspection/ERC165.sol";
-import {Math} from "openzeppelin-contracts-5.0.2/utils/math/Math.sol";
+import {AccessControlEnumerable} from "openzeppelin-contracts-5/access/extensions/AccessControlEnumerable.sol";
+import {ECDSA} from "openzeppelin-contracts-5/utils/cryptography/ECDSA.sol";
+import {MessageHashUtils} from "openzeppelin-contracts-5/utils/cryptography/MessageHashUtils.sol";
+import {ERC165} from "openzeppelin-contracts-5/utils/introspection/ERC165.sol";
+import {Math} from "openzeppelin-contracts-5/utils/math/Math.sol";
 import {ZoneInterface} from "seaport/contracts/interfaces/ZoneInterface.sol";
 import {ZoneParameters, Schema, ReceivedItem} from "seaport-types/src/lib/ConsiderationStructs.sol";
 import {ZoneAccessControl} from "./ZoneAccessControl.sol";

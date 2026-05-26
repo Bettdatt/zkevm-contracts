@@ -1,10 +1,10 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
 // slither-disable-start calls-loop
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
 import {IOperatorAllowlist} from "./IOperatorAllowlist.sol";
-import {IERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+import {IERC165} from "openzeppelin-contracts-5/utils/introspection/ERC165.sol";
 import {OperatorAllowlistEnforcementErrors} from "./OperatorAllowlistEnforcementErrors.sol";
 
 // Disable this code size warning as there is no plan to change this logic.

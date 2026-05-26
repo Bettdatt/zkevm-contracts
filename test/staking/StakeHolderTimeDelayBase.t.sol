@@ -1,11 +1,11 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
 import {IStakeHolder} from "../../contracts/staking/IStakeHolder.sol";
 import {StakeHolderBaseTest} from "./StakeHolderBase.t.sol";
-import {TimelockController} from "openzeppelin-contracts-4.9.3/governance/TimelockController.sol";
-import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-4.9.3/proxy/utils/UUPSUpgradeable.sol";
+import {TimelockController} from "openzeppelin-contracts-5/governance/TimelockController.sol";
+import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-4/proxy/utils/UUPSUpgradeable.sol";
 import {StakeHolderBase} from "../../contracts/staking/StakeHolderBase.sol";
 
 abstract contract StakeHolderTimeDelayBaseTest is StakeHolderBaseTest {
@@ -106,7 +106,7 @@ abstract contract StakeHolderTimeDelayBaseTest is StakeHolderBaseTest {
         bytes32 salt = bytes32(uint256(1));
         uint256 theDelay = delay - 1; // Too small
 
-        vm.expectRevert(abi.encodePacked("TimelockController: insufficient delay"));
+        vm.expectRevert(abi.encodeWithSelector(TimelockController.TimelockInsufficientDelay.selector, theDelay, delay));
         vm.prank(adminProposer);
         stakeHolderTimeDelay.schedule(target, value, data, predecessor, salt, theDelay);
     }
@@ -130,9 +130,13 @@ abstract contract StakeHolderTimeDelayBaseTest is StakeHolderBaseTest {
         vm.prank(adminProposer);
         stakeHolderTimeDelay.schedule(target, value, data, predecessor, salt, theDelay);
 
-        vm.expectRevert(abi.encodePacked("TimelockController: operation is not ready"));
-        vm.warp(timeNow + delay - 1); // Too early
+        bytes32 operationId = stakeHolderTimeDelay.hashOperation(target, value, data, predecessor, salt);
 
+        /// forge-lint: disable-next-line(incorrect-shift)
+        bytes32 stateMask = bytes32(1 << uint8(TimelockController.OperationState.Ready));
+        vm.expectRevert(abi.encodeWithSelector(TimelockController.TimelockUnexpectedOperationState.selector, operationId, 
+            stateMask));
+        vm.warp(timeNow + delay - 1); // Too early
         vm.prank(adminExecutor);
         stakeHolderTimeDelay.execute(target, value, data, predecessor, salt);
     }

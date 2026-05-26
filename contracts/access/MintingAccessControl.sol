@@ -1,8 +1,8 @@
 // Copyright Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2.0
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
-import {AccessControlEnumerable} from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import {AccessControlEnumerable} from "openzeppelin-contracts-4/access/AccessControlEnumerable.sol";
 
 abstract contract MintingAccessControl is AccessControlEnumerable {
     /// @notice Role to mint tokens

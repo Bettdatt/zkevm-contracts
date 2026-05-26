@@ -1,10 +1,10 @@
 // Copyright (c) Immutable Pty Ltd 2018 - 2026
 // SPDX-License-Identifier: Apache 2
-pragma solidity >=0.8.19 <0.8.29;
+pragma solidity >=0.8.19 <=0.8.27;
 
 import {
     IAccessControlEnumerableUpgradeable
-} from "openzeppelin-contracts-upgradeable-4.9.3/access/IAccessControlEnumerableUpgradeable.sol";
+} from "openzeppelin-contracts-upgradeable-4/access/IAccessControlEnumerableUpgradeable.sol";
 
 /**
  * @title IStakeHolder: Interface for staking system.
