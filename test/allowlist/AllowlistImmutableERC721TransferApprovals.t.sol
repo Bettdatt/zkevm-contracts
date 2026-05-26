@@ -2,20 +2,20 @@ pragma solidity >=0.8.19 <0.8.29;
 
 import {Test} from "forge-std/Test.sol";
 
-import {MockWallet} from "../../contracts/mocks/MockWallet.sol";
-import {MockFactory} from "../../contracts/mocks/MockFactory.sol";
-import {ImmutableERC721} from "../../contracts/token/erc721/preset/ImmutableERC721.sol";
+import {MockWallet} from "../utils/mocks/MockWallet.sol";
+import {MockFactory} from "../utils/mocks/MockFactory.sol";
+import {ImmutableERC721V2} from "../../contracts/token/erc721/preset/ImmutableERC721V2.sol";
 import {OperatorAllowlistUpgradeable} from "../../contracts/allowlist/OperatorAllowlistUpgradeable.sol";
 import {DeployOperatorAllowlist} from "../utils/DeployAllowlistProxy.sol";
 import {DeploySCWallet} from "../utils/DeploySCW.sol";
 import {DeployMockMarketPlace} from "../utils/DeployMockMarketPlace.sol";
-import {MockMarketplace} from "../../contracts/mocks/MockMarketplace.sol";
-import {MockDisguisedEOA} from "../../contracts/mocks/MockDisguisedEOA.sol";
-import {MockOnReceive} from "../../contracts/mocks/MockOnReceive.sol";
+import {MockMarketplace} from "../utils/mocks/MockMarketplace.sol";
+import {MockDisguisedEOA} from "../utils/mocks/MockDisguisedEOA.sol";
+import {MockOnReceive} from "../utils/mocks/MockOnReceive.sol";
 
 contract AllowlistERC721TransferApprovals is Test {
     OperatorAllowlistUpgradeable public allowlist;
-    ImmutableERC721 public immutableERC721;
+    ImmutableERC721V2 public immutableERC721;
     DeploySCWallet public deploySCWScript;
     DeployMockMarketPlace public deployMockMarketPlaceScript;
     MockMarketplace public mockMarketPlace;
@@ -41,7 +41,7 @@ contract AllowlistERC721TransferApprovals is Test {
 
         allowlist = OperatorAllowlistUpgradeable(proxyAddr);
 
-        immutableERC721 = new ImmutableERC721(
+        immutableERC721 = new ImmutableERC721V2(
             admin, "test", "USDC", "test-base-uri", "test-contract-uri", address(allowlist), feeReceiver, 0
         );
 

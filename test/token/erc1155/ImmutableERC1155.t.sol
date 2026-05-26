@@ -4,13 +4,13 @@ pragma solidity >=0.8.19 <0.8.29;
 
 import {Test} from "forge-std/Test.sol";
 import {ImmutableERC1155} from "../../../contracts/token/erc1155/preset/ImmutableERC1155.sol";
-import {IImmutableERC1155Errors} from "../../../contracts/errors/Errors.sol";
+import {IImmutableERC1155Errors} from "../../../contracts/token/erc1155/interfaces/IImmutableERC1155Errors.sol";
 import {OperatorAllowlistUpgradeable} from "../../../contracts/allowlist/OperatorAllowlistUpgradeable.sol";
 import {Sign} from "../../utils/Sign.sol";
 import {DeployOperatorAllowlist} from "../../utils/DeployAllowlistProxy.sol";
-import {MockWallet} from "../../../contracts/mocks/MockWallet.sol";
-import {MockWalletFactory} from "../../../contracts/mocks/MockWalletFactory.sol";
-import {MockEIP1271Wallet} from "../../../contracts/mocks/MockEIP1271Wallet.sol";
+import {MockWallet} from "../../utils/mocks/MockWallet.sol";
+import {MockWalletFactory} from "../../utils/mocks/MockWalletFactory.sol";
+import {MockEIP1271Wallet} from "../../utils/mocks/MockEIP1271Wallet.sol";
 
 contract ImmutableERC1155Test is Test {
     ImmutableERC1155 public immutableERC1155;
